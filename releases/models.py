@@ -21,11 +21,26 @@ class Release(TimeStampedModel):
 
 
 class ReleaseObservation(TimeStampedModel):
+    OPEN = 'Open'
+    DELIVERY = 'Delivery'
+    CLICK = 'Click'
+    EMAIL_STATUS = [
+        (OPEN, OPEN),
+        (DELIVERY, DELIVERY),
+        (CLICK, CLICK)
+    ]
+
     stakeholder_email = models.EmailField()
     release = models.ForeignKey(Release, on_delete=models.PROTECT)
-    score = models.CharField(max_length=100, null=True, blank=True)  # choices
+    score = models.CharField(max_length=100, null=True, blank=True)
     comment = models.CharField(max_length=2000, null=True, blank=True)
-    email_status = models.CharField(max_length=2000, null=True, blank=True)  # Webhook callback for postback
+    email_status = models.CharField(
+        choices=EMAIL_STATUS,
+        max_length=2000, null=True, blank=True
+    )
+    delivered_at = models.DateTimeField(null=True, blank=True, editable=False)
+    openned_at = models.DateTimeField(null=True, blank=True, editable=False)
+    clicked_at = models.DateTimeField(null=True, blank=True, editable=False)
 
     def __str__(self):
         return self.stakeholder_email

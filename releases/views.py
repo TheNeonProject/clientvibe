@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.utils.decorators import method_decorator
@@ -19,9 +21,35 @@ class PostmarkWebhook(View):
     def post(self, request, project_slug, **kwargs):
         project = Project.objects.get(slug=project_slug)
         last_release = project.release_set.last()
-        # TODO Get email and type of webhook
-        body = request.body.decode('utf-8')
+        self.update_observation(request, last_release)
         return JsonResponse({'status': 'ok'})
+
+    def update_observation(self, request, release):
+        body = json.loads(request.body.decode('utf-8'))
+        status = body['RecordType']
+        email = body['Recipient']
+        options = {'email_status': status}
+
+        if status in ReleaseObservation.DELIVERY:
+            options['delivered_at'] = body['DeliveredAt']
+        elif status in ReleaseObservation.CLICK:
+            options['clicked_at'] = body['ReceivedAt']
+        elif status in ReleaseObservation.OPEN:
+            options['openned_at'] = body['ReceivedAt']
+
+        observation = release.releaseobservation_set.filter(
+            stakeholder_email=email
+        ).first()
+
+        if not observation:
+            ReleaseObservation.objects.create(
+                release=release,
+                stakeholder_email=email,
+                **options
+            )
+        else:
+            observation = release.releaseobservation_set.filter(
+                stakeholder_email=email).update(**options)
 
 
 class FeedbackView(TemplateView):

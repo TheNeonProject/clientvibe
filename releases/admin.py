@@ -7,6 +7,7 @@ from .models import Release, ReleaseObservation
 class ReleaseObservationInline(admin.TabularInline):
     model = ReleaseObservation
     extra = 0
+    readonly_fields = ('delivered_at', 'openned_at', 'clicked_at')
 
 
 class ReleaseAdmin(admin.ModelAdmin):
