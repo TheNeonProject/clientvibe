@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django import forms
+from django.utils.html import format_html
+from django.urls import reverse
 from tinymce.widgets import TinyMCE
 
 from .models import Release, ReleaseObservation
@@ -13,7 +14,7 @@ class ReleaseObservationInline(admin.TabularInline):
 
 class ReleaseAdmin(admin.ModelAdmin):
     inlines = (ReleaseObservationInline, )
-    list_display = ('project', 'tag', 'uuid', 'send')
+    list_display = ('project', 'tag', 'uuid', 'send_url')
     list_filter = ('project', )
     date_hierarchy = 'created'
     readonly_fields = ('sent', )
@@ -24,9 +25,10 @@ class ReleaseAdmin(admin.ModelAdmin):
         }
         return super().get_form(request, obj, **kwargs)
 
-    def send(self, obj):
-        return f'<a href="/send/{obj.id}/">Send</a>'
-    send.allow_tags = True
+    def send_url(self, obj):
+        url = reverse('send_release', kwargs=dict(release_id=obj.id))
+        return format_html(f'<a href="{url}">Send</a>')
+    send_url.short_description = 'Send email'
 
 
 admin.site.register(Release, ReleaseAdmin)
