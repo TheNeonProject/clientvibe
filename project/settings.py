@@ -168,3 +168,4 @@ CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
