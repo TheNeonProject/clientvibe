@@ -13,6 +13,10 @@ class Release(TimeStampedModel):
     subject = models.CharField(max_length=200)
     body = models.CharField(max_length=2000)
     attachment = models.FileField()
+    sent = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.tag
 
 
 class ReleaseObservation(TimeStampedModel):
@@ -21,3 +25,6 @@ class ReleaseObservation(TimeStampedModel):
     score = models.CharField(max_length=100, null=True, blank=True)  # choices
     comment = models.CharField(max_length=2000, null=True, blank=True)
     email_status = models.CharField(max_length=2000, null=True, blank=True)  # Webhook callback for postback
+
+    def __str__(self):
+        return self.stakeholder_email
