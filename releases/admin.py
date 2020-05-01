@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from tinymce.widgets import TinyMCE
 
 from .models import Release, ReleaseObservation
 
@@ -19,7 +20,7 @@ class ReleaseAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs['widgets'] = {
-            'body': forms.Textarea
+            'body': TinyMCE
         }
         return super().get_form(request, obj, **kwargs)
 
