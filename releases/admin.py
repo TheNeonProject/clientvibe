@@ -14,7 +14,7 @@ class ReleaseObservationInline(admin.TabularInline):
 
 class ReleaseAdmin(admin.ModelAdmin):
     inlines = (ReleaseObservationInline, )
-    list_display = ('project', 'tag', 'uuid', 'send_url')
+    list_display = ('project', 'tag', 'uuid', 'send_url', 'sent')
     list_filter = ('project', )
     date_hierarchy = 'created'
     readonly_fields = ('sent', )
@@ -26,6 +26,9 @@ class ReleaseAdmin(admin.ModelAdmin):
         return super().get_form(request, obj, **kwargs)
 
     def send_url(self, obj):
+        if obj.sent:
+            return '<strong>Already sent</strong>'
+
         url = reverse('send_release', kwargs=dict(release_id=obj.id))
         return format_html(f'<a href="{url}">Send</a>')
     send_url.short_description = 'Send email'

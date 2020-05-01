@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.views.generic.base import View, TemplateView
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
 
 from projects.models import Project
 from releases.models import Release, ReleaseObservation
@@ -101,3 +102,6 @@ class SendReleaseView(View):
         if release.attachment:
             email.attach_file(release.attachment.path)
         email.send()
+
+        release.sent = timezone.now()
+        release.save()
