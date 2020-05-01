@@ -16,6 +16,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from releases.views import PostmarkWebhook, FeedbackView, SendReleaseView
+
+
 urlpatterns = [
+    path(
+        'send/<int:release_id>/',
+        SendReleaseView.as_view(),
+        name='send_release'
+    ),
+    path(
+        'postmark/<str:project_slug>/',
+        PostmarkWebhook.as_view(),
+        name='postmark_webhook'
+    ),
+    path(
+        'feedback/<uuid:release>/<str:email>/',
+        FeedbackView.as_view(),
+        name='feedback'
+    ),
     path('admin/', admin.site.urls),
 ]

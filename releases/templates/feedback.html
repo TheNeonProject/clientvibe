@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1></h1>
+
+{% if messages %}
+<ul>
+   {% for message in messages %}
+	   <li>{{ message }}</li>
+   {% endfor %}
+</ul>
+{% endif %}
+
+<p>
+    <form method="POST">{% csrf_token %}
+        <label>Puntuación</label>
+        <input name="score" type="number" min="1" max="10" />
+
+        <label>Comentarios</label>
+        <textarea name="comment"></textarea>
+
+        <input type="submit" value="Enviar">
+    </form>
+</p>
+
+</body>
+</html>

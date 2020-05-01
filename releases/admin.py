@@ -11,7 +11,7 @@ class ReleaseObservationInline(admin.TabularInline):
 
 class ReleaseAdmin(admin.ModelAdmin):
     inlines = (ReleaseObservationInline, )
-    list_display = ('project', 'tag', 'send')
+    list_display = ('project', 'tag', 'uuid', 'send')
     list_filter = ('project', )
     date_hierarchy = 'created'
     readonly_fields = ('sent', )
@@ -23,8 +23,8 @@ class ReleaseAdmin(admin.ModelAdmin):
         return super().get_form(request, obj, **kwargs)
 
     def send(self, obj):
-        # TODO
-        return 'Send'
+        return f'<a href="/send/{obj.id}/">Send</a>'
+    send.allow_tags = True
 
 
 admin.site.register(Release, ReleaseAdmin)
