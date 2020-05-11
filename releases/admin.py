@@ -18,6 +18,28 @@ class ReleaseAdmin(admin.ModelAdmin):
     list_filter = ('project', )
     date_hierarchy = 'created'
     readonly_fields = ('sent', )
+    fieldsets = [
+        ('Default', {
+            'fields': (
+                'project', 'tag', 'subject', 'body', 'attachment'
+            ),
+            'description': '''
+                <h1>IMPORTANT! You need to set a webhook on postmark per project.</h1>
+
+                <p>
+                   In order to get the email status information from the stakeholders, you need to
+                   set a Webhook on Postmark with the following url pattern: <strong>https://clientvi.be/postmark/</strong>
+                </p>
+
+                <p>
+                   To select the project you need to set a Header for the webhook <strong>slug: *project_slug*</strong>
+                </p>
+
+                <p>You need to check <strong>Delivery</strong>, <strong>Open</strong> and <strong>Click</strong></p>
+
+                <p>To set a webhook you need to go to your Server in Postmark -> Default Transactional Streams -> Webhook</p>
+            '''
+        })]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs['widgets'] = {

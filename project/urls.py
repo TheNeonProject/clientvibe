@@ -26,7 +26,7 @@ urlpatterns = [
         name='send_release'
     ),
     path(
-        'postmark/<str:project_slug>/',
+        'postmark/',
         PostmarkWebhook.as_view(),
         name='postmark_webhook'
     ),

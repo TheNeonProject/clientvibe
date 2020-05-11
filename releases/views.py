@@ -19,7 +19,8 @@ class PostmarkWebhook(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def post(self, request, project_slug, **kwargs):
+    def post(self, request, **kwargs):
+        project_slug = request.headers.get('slug')
         project = Project.objects.get(slug=project_slug)
         last_release = project.release_set.last()
         self.update_observation(request, last_release)
@@ -91,12 +92,10 @@ class SendReleaseView(View):
         project = release.project
 
         email = EmailMessage(
-            subject=release.subject,
-            message=release.body,
-            html_message=release.body,
-            from_email=project.from_email,
-            to=project.team_mails + project.stakeholder_emails,
-            fail_silently=False
+            release.subject,
+            release.body,  # TODO Add feedback link
+            project.from_email,
+            list(project.team_emails + project.stakeholder_emails)
         )
         email.content_subtype = 'html'
         if release.attachment:
